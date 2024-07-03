@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+app.use(logger);
+app.use(middleware);
 app.use(express.json());
 
 let courses = [
@@ -35,6 +37,22 @@ app.delete('/courses/:id', (req, res) => {
     if (!course) return res.status(404).send('The course with the given ID was not found.');
     const index = courses.indexOf(course); courses.splice(index, 1); res.json(course);
 });
+
+function middleware(req, res, next){
+    console.log("called");
+    next();
+}
+
+//logger 
+//method, ip, hostname, date
+
+function logger(req, res, next) {
+    const method = req.method;
+    const ip = req.ip;
+    const hostname = req.hostname;
+    const date = new Date().toISOString();
+    console.log(`METHOD:${method} IP:${ip} HOST:${hostname} DATE:${date}`); next();
+    }
 
 app.listen(3000, () => {
     console.log("server started")
